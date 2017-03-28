@@ -26,7 +26,7 @@ public class EnumTest {
 
         private final String abbreviation;
 
-        private Size(String abbreviation) {
+        Size(String abbreviation) {
             this.abbreviation = abbreviation;
         }
 
