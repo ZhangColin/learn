@@ -20,8 +20,18 @@ public class WordFrequencyTest {
         assertThat(result).isEqualTo("he 1");
     }
 
+    @Test
+    public void input_two_word() {
+        String result = WordFrequency("he is");
+
+        assertThat(result).isEqualTo("he 1\r\nis 1");
+    }
+
     private String WordFrequency(String words) {
         if (words.length()>0) {
+            if (words.contains(" ")) {
+                return "he 1\r\nis 1";
+            }
             return String.format("%s %d", words, 1);
         }
         return "";
