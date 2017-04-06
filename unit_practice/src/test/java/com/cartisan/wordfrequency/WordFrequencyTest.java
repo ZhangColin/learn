@@ -21,7 +21,7 @@ public class WordFrequencyTest {
     }
 
     private String WordFrequency(String words) {
-        if (words == "he") {
+        if (words.length()>0) {
             return String.format("%s %d", words, 1);
         }
         return "";
