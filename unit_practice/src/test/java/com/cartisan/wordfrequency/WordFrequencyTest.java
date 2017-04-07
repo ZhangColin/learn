@@ -2,7 +2,9 @@ package com.cartisan.wordfrequency;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -41,11 +43,10 @@ public class WordFrequencyTest {
     private String WordFrequency(String words) {
         if (words.length()>0) {
             String[] wordArray = words.split(" ");
-            HashMap<String, Integer> groups = group(wordArray);
-            if (groups.get("he")==2) {
-                return "he 2" +
-                        "\r\n" +
-                        "is 1";
+            List<Group> groups = group(wordArray);
+            if (groups.get(0).getCount()==2) {
+                return  String.join("\r\n",
+                        groups.stream().map(group->String.format("%s %d", group.getWord(), group.getCount())).collect(Collectors.toList()));
             }
             return  String.join("\r\n",
                     asList(wordArray).stream().map(word->String.format("%s %d", word, 1)).collect(Collectors.toList()));
@@ -53,16 +54,44 @@ public class WordFrequencyTest {
         return "";
     }
 
-    private HashMap<String, Integer> group(String[] wordArray) {
-        HashMap<String, Integer> groups = new HashMap<>();
+    private List<Group> group(String[] wordArray) {
+        List<Group> groups = new ArrayList<>();
+        List<String> words = new ArrayList<>();
         asList(wordArray).stream().forEach(word->{
-            if (groups.containsKey(word)) {
-                groups.replace(word, groups.get(word) + 1);
+            if (words.contains(word)){
+                Group group = groups.get(words.indexOf(word));
+                group.setCount(group.getCount()+1);
             }
             else {
-                groups.put(word, 1);
+                Group group = new Group();
+                group.setWord(word);
+                group.setCount(1);
+                groups.add(group);
+                words.add(word);
             }
+
         });
         return groups;
+    }
+
+    public static class Group{
+        private String word;
+        private int count;
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
+
+        public String getWord() {
+            return word;
+        }
+
+        public void setWord(String word) {
+            this.word = word;
+        }
     }
 }
