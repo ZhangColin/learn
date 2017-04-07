@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -55,15 +54,23 @@ public class WordFrequencyTest {
         assertThat(result).isEqualTo("he 1\r\nis 1");
     }
 
-    private String WordFrequency(String words) {
-        if (words.length() > 0) {
-            String[] wordArray = words.split("\\s+");
+    private String WordFrequency(String content) {
+        if (content.length() > 0) {
+            String[] wordArray = split(content);
             List<Group> groups = group(wordArray);
-            Collections.sort(groups, (g1,g2)->g2.getCount()-g1.getCount());
-            return String.join("\r\n",
-                    groups.stream().map(group -> String.format("%s %d", group.getWord(), group.getCount())).collect(Collectors.toList()));
+            Collections.sort(groups );
+            return format(groups);
         }
         return "";
+    }
+
+    private String format(List<Group> groups) {
+        return String.join("\r\n",
+                groups.stream().map(group -> group.toString()).collect(Collectors.toList()));
+    }
+
+    private String[] split(String content) {
+        return content.split("\\s+");
     }
 
     private List<Group> group(String[] wordArray) {
@@ -72,11 +79,9 @@ public class WordFrequencyTest {
         asList(wordArray).stream().forEach(word -> {
             if (words.contains(word)) {
                 Group group = groups.get(words.indexOf(word));
-                group.setCount(group.getCount() + 1);
+                group.increment();
             } else {
-                Group group = new Group();
-                group.setWord(word);
-                group.setCount(1);
+                Group group = new Group(word);
                 groups.add(group);
                 words.add(word);
             }
@@ -85,7 +90,12 @@ public class WordFrequencyTest {
         return groups;
     }
 
-    public static class Group {
+    public static class Group implements Comparable<Group> {
+        public Group(String word) {
+            this.word = word;
+            this.count=1;
+        }
+
         private String word;
         private int count;
 
@@ -93,16 +103,22 @@ public class WordFrequencyTest {
             return count;
         }
 
-        public void setCount(int count) {
-            this.count = count;
+        public void increment() {
+            count++;
         }
 
         public String getWord() {
             return word;
         }
 
-        public void setWord(String word) {
-            this.word = word;
+        @Override
+        public String toString() {
+            return String.format("%s %d", getWord(), getCount());
+        }
+
+        @Override
+        public int compareTo(Group o) {
+            return o.getCount()-getCount();
         }
     }
 }
