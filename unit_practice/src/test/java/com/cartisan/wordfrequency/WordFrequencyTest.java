@@ -3,6 +3,8 @@ package com.cartisan.wordfrequency;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,10 +41,18 @@ public class WordFrequencyTest {
         assertThat(result).isEqualTo("he 2\r\nis 1");
     }
 
+    @Test
+    public void sort_input_word() {
+        String result = WordFrequency("he is is");
+
+        assertThat(result).isEqualTo("is 2\r\nhe 1");
+    }
+
     private String WordFrequency(String words) {
         if (words.length() > 0) {
             String[] wordArray = words.split(" ");
             List<Group> groups = group(wordArray);
+            Collections.sort(groups, (g1,g2)->g2.getCount()-g1.getCount());
             return String.join("\r\n",
                     groups.stream().map(group -> String.format("%s %d", group.getWord(), group.getCount())).collect(Collectors.toList()));
         }
