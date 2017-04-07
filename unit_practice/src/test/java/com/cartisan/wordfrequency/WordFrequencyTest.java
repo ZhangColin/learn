@@ -3,7 +3,6 @@ package com.cartisan.wordfrequency;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class WordFrequencyTest {
     @Test
-    public void input_empty_string(){
+    public void input_empty_string() {
         String result = WordFrequency("");
 
         assertThat(result).isEmpty();
@@ -41,15 +40,11 @@ public class WordFrequencyTest {
     }
 
     private String WordFrequency(String words) {
-        if (words.length()>0) {
+        if (words.length() > 0) {
             String[] wordArray = words.split(" ");
             List<Group> groups = group(wordArray);
-            if (groups.get(0).getCount()==2) {
-                return  String.join("\r\n",
-                        groups.stream().map(group->String.format("%s %d", group.getWord(), group.getCount())).collect(Collectors.toList()));
-            }
-            return  String.join("\r\n",
-                    asList(wordArray).stream().map(word->String.format("%s %d", word, 1)).collect(Collectors.toList()));
+            return String.join("\r\n",
+                    groups.stream().map(group -> String.format("%s %d", group.getWord(), group.getCount())).collect(Collectors.toList()));
         }
         return "";
     }
@@ -57,12 +52,11 @@ public class WordFrequencyTest {
     private List<Group> group(String[] wordArray) {
         List<Group> groups = new ArrayList<>();
         List<String> words = new ArrayList<>();
-        asList(wordArray).stream().forEach(word->{
-            if (words.contains(word)){
+        asList(wordArray).stream().forEach(word -> {
+            if (words.contains(word)) {
                 Group group = groups.get(words.indexOf(word));
-                group.setCount(group.getCount()+1);
-            }
-            else {
+                group.setCount(group.getCount() + 1);
+            } else {
                 Group group = new Group();
                 group.setWord(word);
                 group.setCount(1);
@@ -74,7 +68,7 @@ public class WordFrequencyTest {
         return groups;
     }
 
-    public static class Group{
+    public static class Group {
         private String word;
         private int count;
 
