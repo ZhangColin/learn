@@ -48,9 +48,16 @@ public class WordFrequencyTest {
         assertThat(result).isEqualTo("is 2\r\nhe 1");
     }
 
+    @Test
+    public void word_include_multiple_space() {
+        String result = WordFrequency("he   is");
+
+        assertThat(result).isEqualTo("he 1\r\nis 1");
+    }
+
     private String WordFrequency(String words) {
         if (words.length() > 0) {
-            String[] wordArray = words.split(" ");
+            String[] wordArray = words.split("\\s+");
             List<Group> groups = group(wordArray);
             Collections.sort(groups, (g1,g2)->g2.getCount()-g1.getCount());
             return String.join("\r\n",
