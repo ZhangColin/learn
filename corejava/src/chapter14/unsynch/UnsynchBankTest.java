@@ -1,4 +1,4 @@
-package chapter14;
+package chapter14.unsynch;
 
 public class UnsynchBankTest {
     public static final int NACCOUNTS=100;
