@@ -1,0 +1,40 @@
+package com.cartisan.java8.answers.chapter3;
+
+import org.junit.Test;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+
+public class FilterUsingReduceTest {
+    @Test
+    public void emptyList() {
+        assertFiltered(x -> false, Collections.emptyList(), Collections.emptyList());
+    }
+
+    @Test
+    public void trueReturnsEverything() {
+        assertFiltered((Integer x) -> true, asList(1, 2, 3), asList(1, 2, 3));
+    }
+
+    @Test
+    public void falseRemovesEverything() {
+        assertFiltered((Integer x) -> false, asList(1, 2, 3), asList());
+    }
+
+    @Test
+    public void filterPartOfList() {
+        assertFiltered((Integer x) -> x > 2, asList(1, 2, 3), asList(3));
+    }
+
+    private <T> void assertFiltered(Predicate<T> predicate, List<T> input, List<T> expectedOutput) {
+        List<T> output = FilterUsingReduce.filter(input.stream(), predicate);
+        assertEquals(expectedOutput, output);
+
+        List<T> parallelOutput = FilterUsingReduce.filter(input.parallelStream(), predicate);
+        assertEquals(expectedOutput, parallelOutput);
+    }
+}
