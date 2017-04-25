@@ -21,7 +21,7 @@ public class ThreadState {
     }
 
 
-    // 该纯种在 Waiting.class 实例上等待
+    // 该线程在 Waiting.class 实例上等待
     static class Waiting implements Runnable {
         @Override
         public void run() {
