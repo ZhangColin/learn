@@ -1,8 +1,9 @@
-package chapter01;
+package chapter02;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class FilteringApples {
     public static void main(String[] args) {
@@ -11,28 +12,20 @@ public class FilteringApples {
                 new Apple(155, "green"),
                 new Apple(120, "red"));
 
-        List<Apple> greenApples = filterApplesByColor(inventory, "green");
+        List<Apple> greenApples = filterApples(inventory, FilteringApples::isGreenApple);
         System.out.println(greenApples);
 
-        List<Apple> redApples = filterApplesByColor(inventory, "red");
-        System.out.println(redApples);
-
-        List<Apple> greenApples2 = filter(inventory, new AppleColorPredicate());
-        System.out.println(greenApples2);
-
-        List<Apple> heavyApples = filter(inventory, new AppleWeightPredicate());
+        List<Apple> heavyApples = filterApples(inventory, FilteringApples::isHeavyApple);
         System.out.println(heavyApples);
 
-        List<Apple> redAndHeavyApples = filter(inventory, new AppleRedAndHeavyPredicate());
-        System.out.println(redAndHeavyApples);
+        List<Apple> greenApples2 = filterApples(inventory, a -> "green".equals(a.getColor()));
+        System.out.println(greenApples2);
 
-        List<Apple> redApples2 = filter(inventory, new ApplePredicate() {
-            @Override
-            public boolean test(Apple apple) {
-                return apple.getColor().equals("red");
-            }
-        });
-        System.out.println(redApples2);
+        List<Apple> heavyApples2 = filterApples(inventory, a -> a.getWeight() > 150);
+        System.out.println(heavyApples2);
+
+        List<Apple> weirdApples = filterApples(inventory, a -> a.getWeight() < 80 || "brown".equals(a.getColor()));
+        System.out.println(weirdApples);
     }
 
     public static List<Apple> filterGreenApples(List<Apple> inventory) {
@@ -45,17 +38,25 @@ public class FilteringApples {
         return result;
     }
 
-    public static List<Apple> filterApplesByColor(List<Apple> inventory, String color) {
+    public static List<Apple> filterHeavyApples(List<Apple> inventory) {
         List<Apple> result = new ArrayList<>();
         for (Apple apple : inventory) {
-            if (apple.getColor().equals(color)) {
+            if (apple.getWeight()>150) {
                 result.add(apple);
             }
         }
         return result;
     }
 
-    public static List<Apple> filter(List<Apple> inventory, ApplePredicate predicate) {
+    public static boolean isGreenApple(Apple apple) {
+        return "green".equals(apple.getColor());
+    }
+
+    public static boolean isHeavyApple(Apple apple) {
+        return apple.getWeight()>150;
+    }
+
+    public static List<Apple> filterApples(List<Apple> inventory, Predicate<Apple> predicate) {
         List<Apple> result = new ArrayList<>();
         for (Apple apple : inventory) {
             if (predicate.test(apple)) {
@@ -95,31 +96,4 @@ public class FilteringApples {
             return "Apple { color='" + color + "', weight='" + weight + "'}";
         }
     }
-
-    interface ApplePredicate {
-        public boolean test(Apple apple);
-    }
-
-    static class AppleWeightPredicate implements ApplePredicate {
-        @Override
-        public boolean test(Apple apple) {
-            return apple.getWeight() > 150;
-        }
-    }
-
-    static class AppleColorPredicate implements ApplePredicate {
-        @Override
-        public boolean test(Apple apple) {
-            return "green".equals(apple.getColor());
-        }
-    }
-
-    static class AppleRedAndHeavyPredicate implements ApplePredicate {
-        @Override
-        public boolean test(Apple apple) {
-            return "red".equals(apple.getColor()) && apple.getWeight() > 150;
-        }
-    }
-
-
 }
